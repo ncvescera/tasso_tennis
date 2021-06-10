@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>Home page</h1>
+    {% for field in fields %}
+        <h3>{{field.name}}</h3>
+        <p>Description: {{field.description}}</p>
+        <p>Location: {{field.address}}</p>
+        <p>Price: {{field.price_h}}</p>
+    {% endfor %}
+    
+{% endblock content %}
