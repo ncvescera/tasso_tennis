@@ -36,8 +36,8 @@ class Field(db.Model):
             'name': str(self.name),
             'description': str(self.description),
             'address': str(self.address),
-            'available_from': str(self.available_from),
-            'available_to': str(self.available_to),
+            'available_from': str(self.available_from)[:-3],
+            'available_to': str(self.available_to)[:-3],
             'price_h': str(self.price_h),
             'landowner_id': self.landowner_id
         }

@@ -23,6 +23,12 @@ def get_all_fields():
 
             return json.dumps({'rep': dati_json}), 200
 
+        else:
+            dati = Field.query.all()
+            dati_json = [x.as_dict() for x in dati]     # converte il risultato in dizionario per poter essere inviato a JS
+
+            return json.dumps({'rep': dati_json}), 200
+
     return json.dumps({'error': 'Login first !'}), 401
 
 

@@ -19,7 +19,7 @@ def about():
 def register():
     # controlla se l'utente e' gia' autenticato
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return redirect(url_for('dashboard'))
 
     form = RegistrationForm()
     
@@ -65,7 +65,7 @@ def login():
 
     # controlla se l'utente e' gia' autenticato
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return redirect(url_for('dashboard'))
 
     if form.validate_on_submit():
             email = form.email.data
@@ -107,14 +107,16 @@ def addfield():
     if current_user.landowner:
         form = AddFieldForm()
 
-        if form.validate_on_submit():
-            data = {'aaa': 'aaaa'}
-            # print(form.as_dict())
-            #result = requests.post('http://0.0.0.0:8080/api/fields', json=data)
-            #print(result.content)
-
         return render_template('addfield.html', title="Dashboard", form=form)
     else:
         return url_for('dashboard')
 
 
+@app.route('/prenota', methods=["GET", "POST"])
+@login_required
+def prenota():
+    if current_user.landowner == False:
+
+        return render_template('prenota.html', title="Prenota")
+    else:
+        return url_for('dashboard')

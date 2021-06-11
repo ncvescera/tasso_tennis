@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>Prenota</h1>
+
+<p><b>Tutti i campi disponibili: </b></p>
+<div id="campi"></div>
+
+<script>
+
+    $.ajax({
+        url: '/api/fields',
+        type: 'GET',
+
+        success: function(response) {
+            risposta = JSON.parse(response);    // converte la risposta in JSON
+            dati = risposta.rep;
+            
+            var tabella = $("<table></table>").addClass('table table-hover table-striped');
+            var thead = $("<thead><tr><th>Nome</th><th>Descrizione</th><th>Apertura</th><th>€/ora</th></tr></thead>")
+            var tbody = $("<tbody></tbody>");
+
+            dati.forEach(element => {
+                var riga = $("<tr></tr>");
+
+                var col1 = $("<td></td>").text(element.name);
+                var col2 = $("<td></td>").text(element.description);
+                var col3 = $("<td></td>").text(element.available_from + ' ' + element.available_to);
+                var col4 = $("<td></td>").text(element.price_h);
+                
+                riga.append(col1, col2, col3, col4);
+                tbody.append(riga);
+            });
+            tabella.append(thead, tbody);
+            $("#campi").html(tabella);
+        },
+
+        error: function(error) {
+            errore = JSON.parse(error.responseText)     // converte la risposta in JSON
+        }
+    });
+
+</script>
+
+{% endblock content %}

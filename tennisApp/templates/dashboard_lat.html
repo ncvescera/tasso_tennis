@@ -6,6 +6,13 @@
 <div id="campi"></div>
 
 <a href="{{url_for('addfield')}}"><button type="button" class="btn btn-outline-info">Aggiungi un campo</button></a>
+<br>
+<br>
+<hr>
+
+<p><b>Le prenotazioni sui tuoi campi: </b></p>
+<div id="prenotazioni"></div>
+
 
 <script>
     // chiamata per ricezioni dati
@@ -44,9 +51,10 @@
 
                 var col1 = $("<td></td>").text(element.name);
                 var col2 = $("<td></td>").text(element.description);
-                var col3 = $("<td></td>").append($("<button></button>").addClass('btn btn-danger').attr('onclick', 'elimina('+element.id+')').text('Elimina'));
+                var col3 = $("<td></td>").text('€ '+ element.price_h);
+                var col4 = $("<td></td>").append($("<button></button>").addClass('btn btn-danger').attr('onclick', 'elimina('+element.id+')').text('Elimina'));
                 
-                riga.append(col1, col2, col3);
+                riga.append(col1, col2, col3, col4);
                 tbody.append(riga);
             });
             tabella.append(tbody);

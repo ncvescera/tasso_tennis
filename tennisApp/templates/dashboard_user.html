@@ -2,6 +2,10 @@
 {% block content %}
 <h1>Dashboard</h1>
 
-<h3>Sei un utente !!</h2>
+<p><b>Le tue prenotazioni: </b></p>
+<div id="prenotazioni"></div>
+
+<a href="{{url_for('prenota')}}"><button type="button" class="btn btn-outline-info">Effettua una nuova prenotazione</button></a>
+
 
 {% endblock content %}
