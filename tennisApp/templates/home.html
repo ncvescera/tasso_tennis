@@ -1,11 +1,15 @@
 {% extends "layout.html" %}
 {% block content %}
 <h1>Home page</h1>
-    {% for field in fields %}
-        <h3>{{field.name}}</h3>
-        <p>Description: {{field.description}}</p>
-        <p>Location: {{field.address}}</p>
-        <p>Price: {{field.price_h}}</p>
-    {% endfor %}
-    
+
+{% if current_user.is_authenticated %}
+    {% if current_user.landowner %}
+        <h2>Sei un latifondista !!</h2>
+    {% else %}
+        <br>
+        <button class="btn btn-outline-info" style="width: 100%;">TEST</button>
+    {% endif %}
+{% else %}
+    <p>Io sono del testo di prova molto bello !</p>
+{% endif %}
 {% endblock content %}
