@@ -3,6 +3,7 @@ from flask_login import login_required, login_user, logout_user, current_user
 from app import *
 from models import User
 from forms import *
+import requests
 
 
 @app.route('/')
@@ -83,7 +84,7 @@ def login():
     return render_template('login.html', title="Login", form=form)
 
 
-@app.route('/logout', methods=['GET', 'POST'])
+@app.route('/logout')
 @login_required
 def logout():
     logout_user()
@@ -91,10 +92,27 @@ def logout():
     return redirect(url_for('home'))
 
 
-@app.route('/dashboard', methods=['GET', 'POST'])
+@app.route('/dashboard')
 @login_required
 def dashboard():
     if current_user.landowner:
         return render_template('dashboard_lat.html', title="Dashboard")
     else:
         return render_template('dashboard_user.html', title="Dashboard")
+
+
+@app.route('/addfield', methods=["GET", "POST"])
+@login_required
+def addfield():
+    if current_user.landowner:
+        form = AddFieldForm()
+
+        if form.validate_on_submit():
+            data = {'aaa': 'aaaa'}
+            # print(form.as_dict())
+            result = requests.post('http://localhost:8080/api/fields', json=data)
+            print(result)
+
+        return render_template('addfield.html', title="Dashboard", form=form)
+    else:
+        return url_for('dashboard')
