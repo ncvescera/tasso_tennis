@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %} 
     <div class="content-section">
-        <form method="POST" action="">
+        <form method="POST" action="" onsubmit="add_field(); return false;">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4"> Add a new Field</legend>
@@ -96,6 +96,30 @@
                 {{ form.submit(class="btn btn-outline-info", id="go") }}
             </div>
         </form>
-      </div> 
+      </div>
+
+      <script>
+            function add_field() {
+                console.log( $('form').serialize());
+                $.ajax({
+                    url: '/api/fields',
+                    data: $('form').serialize(),    // prende i dati del form
+                    type: 'POST',
+
+                    success: function(response) {
+                        console.log(response);
+                        risposta = JSON.parse(response);    // converte la risposta in JSON
+                        
+                        alert(risposta.message);            // stampa il messaggio di successo
+                        $('form').trigger('reset');
+                    },
+
+                    error: function(error) {
+                        errore = JSON.parse(error.responseText);     // converte la risposta in JSON
+                        alert(errore.error);
+                    }
+                });
+            }
+    </script>
 {% endblock content %}
   

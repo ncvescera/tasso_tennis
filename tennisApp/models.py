@@ -22,12 +22,11 @@ class User(db.Model, UserMixin):
 
 class Field(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(20))
+    name = db.Column(db.String(20), nullable=False, unique=True)
     description = db.Column(db.Text)
     address = db.Column(db.String(60), nullable=False)
-    #non penso sia il metodo migliore per segnare quando un campo è prenotato
-    available_from = db.Column(db.Date, nullable=False)
-    available_to = db.Column(db.Date, nullable=False)
+    available_from = db.Column(db.Time, nullable=False)
+    available_to = db.Column(db.Time, nullable=False)
     price_h = db.Column(db.Float, nullable=False)
     landowner_id = db.Column(db.String(30), db.ForeignKey('user.username'), default=False)
 

@@ -110,9 +110,11 @@ def addfield():
         if form.validate_on_submit():
             data = {'aaa': 'aaaa'}
             # print(form.as_dict())
-            result = requests.post('http://localhost:8080/api/fields', json=data)
-            print(result)
+            #result = requests.post('http://0.0.0.0:8080/api/fields', json=data)
+            #print(result.content)
 
         return render_template('addfield.html', title="Dashboard", form=form)
     else:
         return url_for('dashboard')
+
+
