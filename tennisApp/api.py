@@ -149,8 +149,8 @@ def get_all_prenotations():
             print(elem)
             tmp = {
                 'date': str(elem[0]),
-                'start': str(elem[1]),
-                'end': str(elem[2]),
+                'start': str(elem[1])[:-3],
+                'end': str(elem[2])[:-3],
                 'price': str(round(elem[3], 1)),
                 'name': str(elem[4])
             }
