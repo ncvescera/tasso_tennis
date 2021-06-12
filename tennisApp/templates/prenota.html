@@ -5,7 +5,103 @@
 <p><b>Tutti i campi disponibili: </b></p>
 <div id="campi"></div>
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Prenota il campo</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+           <div><b>Nome: </b><span id="m_name"></span></div>
+           <br>
+           <div><b>Descrizione:</b><br><span id="m_description"></span></div>
+           <br>
+           <div><b>Indirizzo: </b><span id="m_address"></span></div>
+           <br>
+           <div><b>Apertura: </b><span id="m_available_from"></span> <b>Chiusura: </b><span id="m_available_to"></span></div>
+           <br>
+           <div><b>€/ora: </b><span id="m_price_h"></span></div>
+
+           <br>
+           <br>
+
+           <form class="form-inline" id="prenota_form" onsubmit="prenota(); return false;">
+               <input type="hidden" id="field_id" name="field_id">
+               <table>
+                   <tr>
+                       <th>Da:</th>
+                       <th>A:</th>
+                       <th>Giorno:</th>
+                   </tr>
+                   <tr>
+                       <td><input type="time" class="form-control mb-2 mr-sm-2" id="da" name="da" required></td>
+                       <td><input type="time" class="form-control mb-2 mr-sm-2" id="a" name="a" required></td>
+                       <td><input type="date" class="form-control mb-2 mr-sm-2" id="giorno" name="giorno" required></td>
+                   </tr>
+               </table> 
+          </form>
+   
+          <div id="errori" role="alert"></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="dismiss();">Chiudi</button>
+            <button type="submit" class="btn btn-primary" form="prenota_form">Prenota</button>
+        </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    var prova_dati;
+
+    function dismiss() {
+        $('#errori').empty().attr('class', '');
+    }
+
+    function prenota() {
+
+        $.ajax({
+            url: '/api/prenotations',
+            data: $('#prenota_form').serialize(),    // prende i dati del form
+            type: 'POST',
+
+            success: function(response) {
+                
+                console.log(response);
+                risposta = JSON.parse(response);    // converte la risposta in JSON
+                
+                $('#errori').text(risposta.message).attr('class', 'alert alert-success');
+                //alert(risposta.message);            // stampa il messaggio di successo
+                //$('#prenota_form').trigger('reset');
+            },
+
+            error: function(error) {
+                
+                errore = JSON.parse(error.responseText);     // converte la risposta in JSON
+                $('#errori').text(errore.error).attr('class', 'alert alert-danger');
+            }
+        });
+            
+    }
+
+    function show_modal(id) {
+        // cerco l'elemento con il dato id nell'array con tutti i campi
+        var found = prova_dati.find(element => element.id == id);
+
+        // riempio i campi del modal
+        $('#m_name').text(found.name);
+        $('#m_description').text(found.description);
+        $('#m_address').text(found.address);
+        $('#m_available_from').text(found.available_from);
+        $('#m_available_to').text(found.available_to);
+        $('#m_price_h').text(found.price_h);
+        $('#field_id').val(id);
+        
+    }
 
     $.ajax({
         url: '/api/fields',
@@ -15,12 +111,16 @@
             risposta = JSON.parse(response);    // converte la risposta in JSON
             dati = risposta.rep;
             
+            prova_dati = dati;
+
             var tabella = $("<table></table>").addClass('table table-hover table-striped');
             var thead = $("<thead><tr><th>Nome</th><th>Descrizione</th><th>Apertura</th><th>€/ora</th></tr></thead>")
             var tbody = $("<tbody></tbody>");
 
             dati.forEach(element => {
-                var riga = $("<tr></tr>");
+                var riga = $("<tr data-toggle=\"modal\" data-target=\"#exampleModal\"></tr>")
+                            .attr('onclick', 'show_modal('+element.id+')')
+                            .css('cursor', 'pointer');
 
                 var col1 = $("<td></td>").text(element.name);
                 var col2 = $("<td></td>").text(element.description);
@@ -38,7 +138,6 @@
             errore = JSON.parse(error.responseText)     // converte la risposta in JSON
         }
     });
-
 </script>
 
 {% endblock content %}

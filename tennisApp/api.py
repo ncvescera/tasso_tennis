@@ -84,4 +84,44 @@ def delete_field(id):
 
     return json.dumps({'error': 'Login first !'}), 401
 
-    
+
+@app.route('/api/prenotations', methods=['POST'])
+@login_required
+def add_prenotation():
+    def diff_time_time(start, end):
+        diff = end - start
+        secs = diff.seconds
+        minutes = ((secs/60)%60)/60.0
+        hours = secs/3600
+        tot = hours + minutes
+
+        return tot
+
+    if current_user.is_authenticated and current_user.landowner == False:    
+        user_id = current_user.id
+
+        field_id = request.form['field_id']
+        start = datetime.strptime(request.form['da'], '%H:%M')
+        end   = datetime.strptime(request.form['a'], '%H:%M')
+        date =  datetime.strptime(request.form['giorno'], '%Y-%m-%d').date()
+        
+        price_h = Field.query.filter_by(id=field_id).first().price_h
+        price = price_h * diff_time_time(start, end)
+        
+        new_prenotation = Prenotation(
+            field_id=field_id, 
+            player_id=user_id, 
+            date=date,
+            start=start.time(),
+            end=end.time(),
+            price=price)
+
+        try:
+            db.session.add(new_prenotation)
+            db.session.commit()
+        except:
+            return json.dumps({'error': 'Impossibile effettuare la prenotazione!'}), 400
+
+        return json.dumps({'message': 'Prenotazione effettuata con successo !'}), 200        
+
+    return json.dumps({'error': 'Login first !'}), 401
