@@ -7,5 +7,38 @@
 
 <a href="{{url_for('prenota')}}"><button type="button" class="btn btn-outline-info">Effettua una nuova prenotazione</button></a>
 
+<script>
+$.ajax({
+    url: '/api/prenotations',
+    type: 'GET',
+
+    success: function(response) {
+        risposta = JSON.parse(response);    // converte la risposta in JSON
+        dati = risposta.rep;
+        console.log(dati);
+        var tabella = $("<table></table>").addClass('table table-hover table-striped');
+        var tbody = $("<tbody></tbody>");
+
+        dati.forEach(element => {
+            var riga = $("<tr></tr>");
+
+            var col1 = $("<td></td>").text(element.date);
+            var col2 = $("<td></td>").text(element.start);
+            var col3 = $("<td></td>").text(element.end);
+            var col4 = $("<td></td>").text(element.name);
+            var col5 = $("<td></td>").text('€ '+ element.price);
+            
+            riga.append(col1, col2, col3, col4, col5);
+            tbody.append(riga);
+        });
+        tabella.append(tbody);
+        $("#prenotazioni").html(tabella);
+    },
+
+    error: function(error) {
+        errore = JSON.parse(error.responseText)     // converte la risposta in JSON
+    }
+});
+</script>
 
 {% endblock content %}

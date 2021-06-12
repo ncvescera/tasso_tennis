@@ -55,8 +55,8 @@ class Prenotation(db.Model):
         return {
             'field_id': self.field_id,
             'player_id': str(self.player_id),
-            'date': self.date,
-            'start': self.start,
-            'end': self.end,
-            'price': self.price
+            'date': str(self.date),
+            'start': str(self.start)[:-3],
+            'end': str(self.end)[:-3],
+            'price': str(round(self.price, 1))
         }

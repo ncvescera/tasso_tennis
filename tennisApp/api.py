@@ -125,3 +125,38 @@ def add_prenotation():
         return json.dumps({'message': 'Prenotazione effettuata con successo !'}), 200        
 
     return json.dumps({'error': 'Login first !'}), 401
+
+
+@app.route('/api/prenotations', methods=['GET'])
+@login_required
+def get_all_prenotations():
+    if current_user.is_authenticated and current_user.landowner == False:
+        user_id = current_user.id
+        
+        prenotazioni = db.session.query(
+            Prenotation.date, 
+            Prenotation.start, 
+            Prenotation.end, 
+            Prenotation.price, 
+            Field.name
+                ).join(
+                    Field, 
+                    Prenotation.field_id == Field.id
+                        ).filter(Prenotation.player_id == user_id)
+        
+        dati_json = []
+        for elem in prenotazioni:
+            print(elem)
+            tmp = {
+                'date': str(elem[0]),
+                'start': str(elem[1]),
+                'end': str(elem[2]),
+                'price': str(round(elem[3], 1)),
+                'name': str(elem[4])
+            }
+    
+            dati_json.append(tmp)
+        
+        return json.dumps({'rep': dati_json}), 200
+
+    return json.dumps({'error': 'Login first !'}), 401
