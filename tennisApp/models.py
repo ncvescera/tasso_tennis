@@ -43,16 +43,18 @@ class Field(db.Model):
         }
 
 class Prenotation(db.Model):
-    field_id = db.Column(db.Integer, db.ForeignKey('field.id'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    field_id = db.Column(db.Integer, db.ForeignKey('field.id'))
     player_id = db.Column(db.String(30), db.ForeignKey('user.username'), nullable=False)
-    date = db.Column(db.Date, primary_key=True, nullable=False)
-    start = db.Column(db.Time, primary_key=True, nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    start = db.Column(db.Time, nullable=False)
     end = db.Column(db.Time, nullable=False)
     price = db.Column(db.Float, nullable=False)
-    
+    __table_args__ = (db.UniqueConstraint('field_id', 'date', 'start', 'end', name='_prenotation_uc'),)
 
     def as_dict(self):
         return {
+            'id': str(self.id),
             'field_id': self.field_id,
             'player_id': str(self.player_id),
             'date': str(self.date),
