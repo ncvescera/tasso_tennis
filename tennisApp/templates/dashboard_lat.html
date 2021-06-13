@@ -15,7 +15,7 @@
 
 
 <script>
-    // chiamata per ricezioni dati
+    /* Funzione per eliminare un campo */
     function elimina(id) {
         $.ajax({
             url: '/api/fields/'+id,
@@ -23,27 +23,27 @@
 
             success: function(response) {
                 risposta = JSON.parse(response);    // converte la risposta in JSON
-                alert(risposta.message);
-                location.reload();
-                //ricarica la pagina
+                alert(risposta.message);            // avvisa dell'avvenuto successo
+                location.reload();                  // aggiorna la pagina
             },
 
             error: function(error) {
                 errore = JSON.parse(error.responseText)     // converte la risposta in JSON
-                alert(errore.error);
+                alert(errore.error);                        // avvisa dell'errore
             }
         });
     } 
     
-    //CAMPI
+    /* Chiamata effettuata al caricamento della pagina per prendere i dati dei campi*/
     $.ajax({
         url: '/api/fields',
         type: 'GET',
 
         success: function(response) {
             risposta = JSON.parse(response);    // converte la risposta in JSON
-            dati = risposta.rep;
+            dati = risposta.rep;                // prende i dati ritornati
             
+            // crea la tabella e la popola
             var tabella = $("<table></table>").addClass('table table-hover table-striped');
             var tbody = $("<tbody></tbody>");
 
@@ -64,8 +64,9 @@
                 riga.append(col1, col2, col3, col4);
                 tbody.append(riga);
             });
+
             tabella.append(tbody);
-            $("#campi").html(tabella);
+            $("#campi").html(tabella);  // aggiunge la tabella al div apposito
         },
 
         error: function(error) {
@@ -73,15 +74,16 @@
         }
     });
 
-    //PRENOTAZIONI
+    /* Chiamata effettuata al caricamento della pagina per prendere i dati delle prenotazioni sui campi*/
     $.ajax({
         url: '/api/prenotations',
         type: 'GET',
 
         success: function(response) {
             risposta = JSON.parse(response);    // converte la risposta in JSON
-            dati = risposta.rep;
+            dati = risposta.rep;                // prende i dati ritornati
             
+            // crea e popola la tabella
             var tabella = $("<table></table>").addClass('table table-hover table-striped');
             var tbody = $("<tbody></tbody>");
 
@@ -97,8 +99,9 @@
                 riga.append(col1, col2, col3, col4, col5);
                 tbody.append(riga);
             });
+
             tabella.append(tbody);
-            $("#prenotazioni").html(tabella);
+            $("#prenotazioni").html(tabella);   // aggiunge la tabella all'apposito div
         },
 
         error: function(error) {

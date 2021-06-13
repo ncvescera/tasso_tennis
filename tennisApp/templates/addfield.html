@@ -99,27 +99,26 @@
       </div>
 
       <script>
-            function add_field() {
-                console.log( $('form').serialize());
-                $.ajax({
-                    url: '/api/fields',
-                    data: $('form').serialize(),    // prende i dati del form
-                    type: 'POST',
+        /* Funzione che controlla il comportamento dol form */
+        function add_field() {
+            $.ajax({
+                url: '/api/fields',
+                data: $('form').serialize(),    // prende i dati del form
+                type: 'POST',
 
-                    success: function(response) {
-                        console.log(response);
-                        risposta = JSON.parse(response);    // converte la risposta in JSON
-                        
-                        alert(risposta.message);            // stampa il messaggio di successo
-                        $('form').trigger('reset');
-                    },
+                success: function(response) {
+                    risposta = JSON.parse(response);    // converte la risposta in JSON
+                    
+                    alert(risposta.message);            // stampa il messaggio di successo
+                    $('form').trigger('reset');         // svuota il form
+                },
 
-                    error: function(error) {
-                        errore = JSON.parse(error.responseText);     // converte la risposta in JSON
-                        alert(errore.error);
-                    }
-                });
-            }
+                error: function(error) {
+                    errore = JSON.parse(error.responseText);     // converte la risposta in JSON
+                    alert(errore.error);                         // stampa l'errore
+                }
+            });
+        }
     </script>
 {% endblock content %}
   

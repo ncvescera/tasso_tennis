@@ -11,6 +11,7 @@
 <br>
 
 <script>
+    /* Funzione per eliminare una prenotazione */
     function elimina(id) {
         $.ajax({
             url: '/api/prenotations/'+id,
@@ -18,26 +19,27 @@
 
             success: function(response) {
                 risposta = JSON.parse(response);    // converte la risposta in JSON
-                alert(risposta.message);
-                location.reload();
-                //ricarica la pagina
+                alert(risposta.message);            // avvisa dell'eliminazione
+                location.reload();                  // aggiorna la pagina
             },
 
             error: function(error) {
                 errore = JSON.parse(error.responseText)     // converte la risposta in JSON
-                alert(errore.error);
+                alert(errore.error);                        // stampa l'errore
             }
         });
     }
 
+    /* Chiamata effettuata al caricamento della pagina per prendere i dati delle prenotazioni effettuate*/
     $.ajax({
         url: '/api/prenotations',
         type: 'GET',
 
         success: function(response) {
             risposta = JSON.parse(response);    // converte la risposta in JSON
-            dati = risposta.rep;
-            console.log(dati);
+            dati = risposta.rep;                // prende i dati ritornati
+            
+            // crea e popola la tabella
             var tabella = $("<table></table>").addClass('table table-hover table-striped');
             var tbody = $("<tbody></tbody>");
 
@@ -59,8 +61,9 @@
                 riga.append(col1, col2, col3, col4, col5, col6);
                 tbody.append(riga);
             });
+
             tabella.append(tbody);
-            $("#prenotazioni").html(tabella);
+            $("#prenotazioni").html(tabella);   // aggiunge la tabella all'apposito div
         },
 
         error: function(error) {
