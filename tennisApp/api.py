@@ -100,28 +100,34 @@ def delete_field(id):
 @app.route('/api/fields', methods=['PUT'])
 @login_required
 def update_field():
+    # controlla che l'utente sia un latifondista
     if current_user.is_authenticated and current_user.landowner:
-        name = request.form['name']
+        # prende i dati dal form
+        user_id     = current_user.id
+        name        = request.form['name']
         description = request.form['description']
-        address = request.form['address']
-        field_id = request.form['field_id']
+        address     = request.form['address']
+        field_id    = request.form['field_id']
 
-        to_update = Field.query.filter_by(id=field_id).first()
+        # controlla che il campo che viene modificato appartiene all'utente
+        to_update = Field.query.filter_by(id=field_id, landowner_id=user_id).first()
         if to_update:
-            to_update.name = name
-            to_update.description = description
-            to_update.address = address
+            to_update.name          = name
+            to_update.description   = description
+            to_update.address       = address
 
+            # prova a modificare il campo
             try:
                 db.session.commit()
             except:
                 return json.dumps({'error': 'Nome del campo gia\' esistente !'}), 400
-                
+
             return json.dumps({'message': f'Campo {name} aggiornato con successo !'}), 200
  
         return json.dumps({'error': 'Campo inesistente !'}), 400
 
     return json.dumps({'error': 'Login first !'}), 401
+
 
 @app.route('/api/prenotations', methods=['POST'])
 @login_required

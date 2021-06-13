@@ -27,7 +27,7 @@
            <form id="modifica_form" onsubmit="modifica(); return false;">
                 <div class="form-group">
                     <label for="name">Nome</label>
-                    <input type="text" class="form-control" id="m_name" name="name" >
+                    <input type="text" class="form-control" id="m_name" name="name" required>
                 </div>
                 <div class="form-group">
                     <label for="description">Descrizione</label>
@@ -35,7 +35,7 @@
                 </div>
                 <div class="form-group">
                     <label for="address">Indirizzo</label>
-                    <input type="text" class="form-control" id="m_address" name="address" >
+                    <input type="text" class="form-control" id="m_address" name="address" required>
                 </div>
                 <input type="hidden" id="field_id" name="field_id"/>
            </form>
@@ -52,7 +52,7 @@
 
 
 <script>
-    var global_campi;
+    var global_campi;   // variabile globale con i dati dei campi
 
     /* Funzione per eliminare un campo */
     function elimina(id) {
@@ -73,10 +73,10 @@
         });
     } 
     
+    /* Funzione per mostrare il modal per modificare il campo */
     function show_modal(id) {
         var found = global_campi.find(element => element.id == id); // cerco l'elemento con il dato id nell'array con tutti i campi
 
-        console.log(found);
         // riempio i campi del modal
         $('#m_name').val(found.name);
         $('#m_description').val(found.description);
@@ -84,6 +84,7 @@
         $('#field_id').val(id);
     }
 
+    /* Funzione che chiama l'api per modificare i valori del campo */
     function modifica() {
         $.ajax({
             url: '/api/fields',
