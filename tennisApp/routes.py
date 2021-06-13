@@ -19,11 +19,12 @@ def about():
 def register():
     # controlla se l'utente e' gia' autenticato
     if current_user.is_authenticated:
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('dashboard'))   # redirige alla pagina dashboard
 
-    form = RegistrationForm()
+    form = RegistrationForm()   # prepara il form di registrazione
     
     if form.validate_on_submit():
+        # prende i dati del form
         user    = form.username.data
         pwd     = form.password.data
         name    = form.name.data
@@ -37,7 +38,7 @@ def register():
         existing_email = User.query.filter_by(email=email).first()
 
         if not existing_user and not existing_email:
-            if pwd == confirm_pwd:
+            if pwd == confirm_pwd:  # controlla che la password sia giusta
                 hashed_password = bcrypt.generate_password_hash(pwd)    # creo la hash della password
                 new_user = User(username=user, password=hashed_password, name=name, surname=surname, email=email,landowner=landowner) # creo il nuovo utente
 
@@ -45,7 +46,7 @@ def register():
                 db.session.add(new_user)
                 db.session.commit()
 
-                flash(f'Account created for {form.username.data}!', 'success')
+                flash(f'Account created for {form.username.data}!', 'success')  # crea il messaggio da stampare
                 return redirect(url_for('home'))
             else:
                 flash(f'Password and Confirm Password doesn\'t match !', 'danger')
@@ -61,25 +62,27 @@ def register():
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
-    form = LoginForm()
+    form = LoginForm()  # prepara il form di login
 
     # controlla se l'utente e' gia' autenticato
     if current_user.is_authenticated:
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('dashboard'))   # redirige alla pagina dashboard
 
     if form.validate_on_submit():
-            email = form.email.data
-            pwd   = form.password.data
+        # prende i dati del form
+        email = form.email.data
+        pwd   = form.password.data
 
-            user = User.query.filter_by(email=email).first()
-            if user:
-                if bcrypt.check_password_hash(user.password, pwd):
-                    login_user(user)
-                    flash('You have been logged in!', 'success')
-                    
-                    return redirect(url_for('dashboard'))
-        
-            flash('Login Unsucessful. Please check username and password', 'danger')
+        user = User.query.filter_by(email=email).first()    # cerca l'utente con la data email
+        if user:
+            # se trova l'utente controlla la password
+            if bcrypt.check_password_hash(user.password, pwd):
+                login_user(user)    # effettua il login
+                flash('You have been logged in!', 'success')
+                
+                return redirect(url_for('dashboard'))
+    
+        flash('Login Unsucessful. Please check username and password', 'danger')
             
     return render_template('login.html', title="Login", form=form)
 
@@ -87,7 +90,7 @@ def login():
 @app.route('/logout')
 @login_required
 def logout():
-    logout_user()
+    logout_user()   # effettua il logout
     flash('You have been logged out!', 'success')
     return redirect(url_for('home'))
 
@@ -95,6 +98,7 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
+    # in base al tipo di utente fa vedere una dashboard diversa
     if current_user.landowner:
         return render_template('dashboard_lat.html', title="Dashboard")
     else:
@@ -104,8 +108,9 @@ def dashboard():
 @app.route('/addfield', methods=["GET", "POST"])
 @login_required
 def addfield():
+    # controlla che l'utente sia un latifondista
     if current_user.landowner:
-        form = AddFieldForm()
+        form = AddFieldForm()   # prepara il form
 
         return render_template('addfield.html', title="Dashboard", form=form)
     else:
@@ -115,8 +120,8 @@ def addfield():
 @app.route('/prenota', methods=["GET", "POST"])
 @login_required
 def prenota():
+    # controlla che l'utente sia un utente normale
     if current_user.landowner == False:
-
         return render_template('prenota.html', title="Prenota")
     else:
         return url_for('dashboard')

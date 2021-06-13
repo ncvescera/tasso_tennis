@@ -8,6 +8,7 @@ app = Flask(__name__)   # inizializzo l'app
 db = SQLAlchemy(app)    # inizializzo il gestore del DB
 bcrypt = Bcrypt(app)    # inizializzo il coso per criptare le password
 
+# inizializza il Login Manager
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
@@ -18,7 +19,7 @@ if __name__ == "__main__":
     from routes import *
     from api import *
 
-    db.create_all()
-    app.run(host="0.0.0.0", port="8080")
+    db.create_all()                      # crea tutte le tabelle
+    app.run(host="0.0.0.0", port="8080") # avvia il server
 
     

@@ -22,7 +22,6 @@ class LoginForm(FlaskForm):
 class AddFieldForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(min=2, max=30)])
     description = TextAreaField()
-    # description = StringField('Description', validators=[DataRequired(), Length(min=2, max=30)])    # in alternativa TextAreaField()
     address = StringField('Address', validators=[DataRequired(), Length(min=2, max=60)])
     available_from = TimeField('Apertura', validators=[DataRequired()])
     available_to =  TimeField('Chiusura', validators=[DataRequired()])
