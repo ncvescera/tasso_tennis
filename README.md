@@ -1,8 +1,6 @@
-# tasso_tennis
+# Tasso Tennis Prenotazioni
 
-Progetto per SAED
-
-![logo](tasso/tennis/static/img/logo.png)
+![logo](tennisApp/static/img/logo.png)
 
 ## Installazione
 
