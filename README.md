@@ -2,6 +2,7 @@
 
 Progetto per SAED
 
+![logo](tasso/tennis/static/img/logo.png)
 
 ## Installazione
 
