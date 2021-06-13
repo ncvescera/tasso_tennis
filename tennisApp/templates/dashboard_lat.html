@@ -13,8 +13,47 @@
 <p><b>Le prenotazioni sui tuoi campi: </b></p>
 <div id="prenotazioni"></div>
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Modifica il campo</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+           <form id="modifica_form" onsubmit="modifica(); return false;">
+                <div class="form-group">
+                    <label for="name">Nome</label>
+                    <input type="text" class="form-control" id="m_name" name="name" >
+                </div>
+                <div class="form-group">
+                    <label for="description">Descrizione</label>
+                    <textarea class="form-control form.control.lg" id="m_description" name="description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="address">Indirizzo</label>
+                    <input type="text" class="form-control" id="m_address" name="address" >
+                </div>
+                <input type="hidden" id="field_id" name="field_id"/>
+           </form>
+   
+          <div id="errori" role="alert"></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="location.reload();">Chiudi</button>
+            <button type="submit" class="btn btn-primary" form="modifica_form">Modifica</button>
+        </div>
+        </div>
+    </div>
+</div>
+
 
 <script>
+    var global_campi;
+
     /* Funzione per eliminare un campo */
     function elimina(id) {
         $.ajax({
@@ -34,6 +73,37 @@
         });
     } 
     
+    function show_modal(id) {
+        var found = global_campi.find(element => element.id == id); // cerco l'elemento con il dato id nell'array con tutti i campi
+
+        console.log(found);
+        // riempio i campi del modal
+        $('#m_name').val(found.name);
+        $('#m_description').val(found.description);
+        $('#m_address').val(found.address);
+        $('#field_id').val(id);
+    }
+
+    function modifica() {
+        $.ajax({
+            url: '/api/fields',
+            data: $('#modifica_form').serialize(),    // prende i dati del form
+            type: 'PUT',
+
+            success: function(response) {
+                risposta = JSON.parse(response);    // converte la risposta in JSON
+                
+                $('#errori').text(risposta.message).attr('class', 'alert alert-success'); // scrive il messaggio sul box per gli avvisi
+            },
+
+            error: function(error) {
+                errore = JSON.parse(error.responseText);     // converte la risposta in JSON
+
+                $('#errori').text(errore.error).attr('class', 'alert alert-danger');    // scrive l'errore sul box per gli avvisi
+            }
+        });
+    }
+
     /* Chiamata effettuata al caricamento della pagina per prendere i dati dei campi*/
     $.ajax({
         url: '/api/fields',
@@ -42,7 +112,8 @@
         success: function(response) {
             risposta = JSON.parse(response);    // converte la risposta in JSON
             dati = risposta.rep;                // prende i dati ritornati
-            
+            global_campi = dati;
+
             // crea la tabella e la popola
             var tabella = $("<table></table>").addClass('table table-hover table-striped');
             var thead = $('<thead><tr><th>Nome</th><th>Descrizione</th><th>€/ora</th><th>Indirizzo</th><th></th></tr></thead>');
@@ -63,8 +134,13 @@
                                                 '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>'
                                                 )
                     );
+                var col6 = $("<td></td>").append(
+                    $("<button data-toggle=\"modal\" data-target=\"#exampleModal\"></button>").addClass('btn btn-info btn-sm')
+                                        .attr('onclick', 'show_modal('+element.id+')')
+                                        .append('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16"><path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/></svg>')
+                )
                 
-                riga.append(col1, col2, col3, col4, col5);
+                riga.append(col1, col2, col3, col4, col5, col6);
                 tbody.append(riga);
             });
 

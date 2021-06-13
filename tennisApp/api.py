@@ -97,6 +97,32 @@ def delete_field(id):
     return json.dumps({'error': 'Login first !'}), 401
 
 
+@app.route('/api/fields', methods=['PUT'])
+@login_required
+def update_field():
+    if current_user.is_authenticated and current_user.landowner:
+        name = request.form['name']
+        description = request.form['description']
+        address = request.form['address']
+        field_id = request.form['field_id']
+
+        to_update = Field.query.filter_by(id=field_id).first()
+        if to_update:
+            to_update.name = name
+            to_update.description = description
+            to_update.address = address
+
+            try:
+                db.session.commit()
+            except:
+                return json.dumps({'error': 'Nome del campo gia\' esistente !'}), 400
+                
+            return json.dumps({'message': f'Campo {name} aggiornato con successo !'}), 200
+ 
+        return json.dumps({'error': 'Campo inesistente !'}), 400
+
+    return json.dumps({'error': 'Login first !'}), 401
+
 @app.route('/api/prenotations', methods=['POST'])
 @login_required
 def add_prenotation():
