@@ -97,6 +97,30 @@ def add_prenotation():
 
         return tot
 
+    def validate_prenotation(prenotazione):
+        today = datetime.today().date()
+
+        if prenotazione.date >= today:
+            prenotazioni_same_date = Prenotation.query.filter_by(date=prenotazione.date)
+
+            s = prenotazione.start
+            e = prenotazione.end
+            for elem in prenotazioni_same_date:
+                i = elem.start
+                j = elem.end
+
+                if s < i and e <= i:
+                    pass
+                elif s >= j and e > s:
+                    pass
+                else:
+                    return False, 'Il campo e\' prenotato per quell\'ora !'
+            
+            return True, ''
+
+        else:
+            return False, 'Controlla la data !'
+
     if current_user.is_authenticated and current_user.landowner == False:    
         user_id = current_user.id
 
@@ -115,6 +139,11 @@ def add_prenotation():
             start=start.time(),
             end=end.time(),
             price=price)
+
+        is_valid = validate_prenotation(new_prenotation)
+
+        if is_valid[0] == False:
+            return json.dumps({'error': f'Impossibile effettuare la prenotazione: {is_valid[1]}' }), 400
 
         try:
             db.session.add(new_prenotation)
