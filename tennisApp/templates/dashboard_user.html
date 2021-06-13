@@ -41,6 +41,8 @@
             
             // crea e popola la tabella
             var tabella = $("<table></table>").addClass('table table-hover table-striped');
+            var thead = $('<thead><tr><th>Data</th><th>Inizio</th><th>Fine</th><th>Campo</th><th>Prezzo</th><th></th></tr></thead>');
+            tabella.append(thead);
             var tbody = $("<tbody></tbody>");
 
             dati.forEach(element => {

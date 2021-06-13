@@ -45,6 +45,8 @@
             
             // crea la tabella e la popola
             var tabella = $("<table></table>").addClass('table table-hover table-striped');
+            var thead = $('<thead><tr><th>Nome</th><th>Descrizione</th><th>€/ora</th><th>Indirizzo</th><th></th></tr></thead>');
+            tabella.append(thead);
             var tbody = $("<tbody></tbody>");
 
             dati.forEach(element => {
@@ -53,7 +55,8 @@
                 var col1 = $("<td></td>").text(element.name);
                 var col2 = $("<td></td>").text(element.description);
                 var col3 = $("<td></td>").text('€'+ element.price_h);
-                var col4 = $("<td></td>").append(
+                var col4 = $("<td></td>").text(element.address);
+                var col5 = $("<td></td>").append(
                     $("<button></button>").addClass('btn btn-danger btn-sm')
                                           .attr('onclick', 'elimina('+element.id+')')
                                             .append(
@@ -61,7 +64,7 @@
                                                 )
                     );
                 
-                riga.append(col1, col2, col3, col4);
+                riga.append(col1, col2, col3, col4, col5);
                 tbody.append(riga);
             });
 
@@ -85,6 +88,8 @@
             
             // crea e popola la tabella
             var tabella = $("<table></table>").addClass('table table-hover table-striped');
+            var thead = $('<thead><tr><th>Data</th><th>Inizio</th><th>Fine</th><th>Campo</th><th>Prezzo</th><th>Utente</th></tr></thead>');
+            tabella.append(thead);
             var tbody = $("<tbody></tbody>");
 
             dati.forEach(element => {
@@ -95,8 +100,9 @@
                 var col3 = $("<td></td>").text(element.end);
                 var col4 = $("<td></td>").text(element.name);
                 var col5 = $("<td></td>").text('€ '+ element.price);
+                var col6 = $("<td></td>").text(element.username);
                 
-                riga.append(col1, col2, col3, col4, col5);
+                riga.append(col1, col2, col3, col4, col5, col6);
                 tbody.append(riga);
             });
 

@@ -28,7 +28,7 @@ class Field(db.Model):
     available_from = db.Column(db.Time, nullable=False)
     available_to = db.Column(db.Time, nullable=False)
     price_h = db.Column(db.Float, nullable=False)
-    landowner_id = db.Column(db.String(30), db.ForeignKey('user.username'), default=False)
+    landowner_id = db.Column(db.String(30), db.ForeignKey('user.id'), default=False)
 
     def as_dict(self):
         return {
@@ -45,7 +45,7 @@ class Field(db.Model):
 class Prenotation(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     field_id = db.Column(db.Integer, db.ForeignKey('field.id', ondelete='CASCADE'))
-    player_id = db.Column(db.String(30), db.ForeignKey('user.username'), nullable=False)
+    player_id = db.Column(db.String(30), db.ForeignKey('user.id'), nullable=False)
     date = db.Column(db.Date, nullable=False)
     start = db.Column(db.Time, nullable=False)
     end = db.Column(db.Time, nullable=False)

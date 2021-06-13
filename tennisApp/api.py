@@ -256,11 +256,15 @@ def get_all_prenotations():
                 Prenotation.end, 
                 Prenotation.price, 
                 Field.name,
-                Prenotation.id
+                Prenotation.id,
+                User.username
                     ).join(
-                        Field, 
+                        Field,
                         Prenotation.field_id == Field.id
-                            ).filter(Field.landowner_id == user_id)
+                            ).join(
+                                User, 
+                                Prenotation.player_id == User.id
+                                ).filter(Field.landowner_id == user_id)
             
             # converte le prenotazioni in JSON per essere ritornate
             dati_json = []
@@ -271,7 +275,8 @@ def get_all_prenotations():
                     'end': str(elem[2])[:-3],
                     'price': str(round(elem[3], 1)),
                     'name': str(elem[4]),
-                    'id': str(elem[5])
+                    'id': str(elem[5]),
+                    'username': str(elem[6])
                 }
         
                 dati_json.append(tmp)
