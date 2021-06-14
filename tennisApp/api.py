@@ -157,7 +157,7 @@ def add_prenotation():
 
         # controlla che la data di prenotazione non sia passata
         if prenotazione.date >= today:
-            prenotazioni_same_date = Prenotation.query.filter_by(date=prenotazione.date)    # prende tutte le prenotazioni fatte in quella data
+            prenotazioni_same_date = Prenotation.query.filter_by(date=prenotazione.date, field_id=prenotazione.field_id)    # prende tutte le prenotazioni fatte in quella data
 
             s = prenotazione.start  # ora di inizio prenotazione
             e = prenotazione.end    # ora di fine prenotazione
